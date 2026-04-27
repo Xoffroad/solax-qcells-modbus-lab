@@ -207,6 +207,24 @@ flake8 solax_qcells_modbus_cli.py tests
 pytest
 ```
 
+### Optional local Git hooks
+
+This repo includes versioned hook scripts in `.githooks/`:
+
+- `pre-commit` runs `flake8`
+- `pre-push` runs `pytest -q`
+
+Activate them once per local clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Notes:
+
+- The hook scripts are versioned and pushed with the repository.
+- The activation (`core.hooksPath`) is local and must be set by each contributor.
+
 ## Known Limitations
 
 - no mode 12 support

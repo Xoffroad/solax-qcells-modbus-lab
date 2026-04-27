@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -eu
+
+echo "[pre-commit] Running flake8..."
+.venv/bin/flake8 solax_qcells_modbus_cli.py tests
