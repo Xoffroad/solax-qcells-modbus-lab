@@ -45,6 +45,7 @@ TIMEOUT_DISABLED = 0
 MODE1_BLOCK_REG_COUNT = 13
 MODE8_BLOCK_REG_COUNT = 8
 MODE4_BLOCK_REG_COUNT = 15
+CSV_OUTPUT_DIR_NAME = "csv"
 
 INT32_MIN = -2147483648
 INT32_MAX = 2147483647
@@ -177,7 +178,17 @@ def _print_console_header() -> None:
 
 def _default_csv_path() -> Path:
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    return Path.cwd() / f"qcells_mode1_{stamp}.csv"
+    return Path.cwd() / CSV_OUTPUT_DIR_NAME / f"qcells_mode1_{stamp}.csv"
+
+
+def resolve_csv_path(csv_file: Optional[str]) -> Path:
+    if csv_file is None:
+        return _default_csv_path()
+
+    requested_path = Path(csv_file).expanduser()
+    if requested_path.parent == Path("."):
+        return Path.cwd() / CSV_OUTPUT_DIR_NAME / requested_path.name
+    return requested_path
 
 
 def _read_input_registers(client: ModbusTcpClient, address: int, count: int, unit: int):
@@ -438,7 +449,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--csv-file",
         default=None,
-        help="CSV output file path (default: auto-generated in current directory)",
+        help="CSV output file path (default: auto-generated in ./csv; filename-only values also use ./csv)",
     )
     parser.add_argument(
         "--timeout",
@@ -482,7 +493,8 @@ def _new_csv_row() -> dict[str, Any]:
 def main() -> int:
     args = parse_args()
 
-    csv_path = Path(args.csv_file) if args.csv_file else _default_csv_path()
+    csv_path = resolve_csv_path(args.csv_file)
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
     csv_file = csv_path.open("w", newline="", encoding="utf-8")
     csv_writer = csv.DictWriter(csv_file, fieldnames=CSV_HEADERS)
     csv_writer.writeheader()

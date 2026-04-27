@@ -1,4 +1,4 @@
-# qcells-mode1-cli
+# solax-qcells-modbus-lab
 
 Standalone CLI to test SolaX/QCells Modbus power-control loops independently from openWB/Home Assistant.
 
@@ -40,20 +40,20 @@ pip install -r requirements.txt
 Run mode 1 with defaults and keep running until `Ctrl+C`:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 1 --active-power 0
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 1 --active-power 0
 ```
 
 Run mode 8 for 30 minutes and stop discharge:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 8 \
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 8 \
   --push-power 0 --pv-power-limit 30000 --duration 20 --repeat-for 1800
 ```
 
 Run mode 4 for 30 minutes and stop discharge:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 4 \
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 4 \
   --push-power 0 --mode4-timeout 0 --repeat-for 1800
 ```
 
@@ -64,6 +64,7 @@ python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 4 \
 - `--duration 20`
 - `--interval 10`
 - `--repeat-for 0` (run until `Ctrl+C`)
+- CSV output path defaults to `./csv/qcells_mode1_<timestamp>.csv`
 - `--disable-on-exit` enabled (`0x7C=0`, `0xA0=0` on exit)
 - `--holding-readback` disabled
 
@@ -72,38 +73,41 @@ python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 4 \
 Force fixed discharge command (`+W`) in mode 4:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 4 --push-power 2000 --mode4-timeout 0
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 4 --push-power 2000 --mode4-timeout 0
 ```
 
 Force fixed charge command (`-W`) in mode 4:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 4 --push-power -2000 --mode4-timeout 0
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 4 --push-power -2000 --mode4-timeout 0
 ```
 
 Force fixed discharge command (`+W`) in mode 8:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power 2000 --pv-power-limit 30000 --duration 20
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power 2000 --pv-power-limit 30000 --duration 20
 ```
 
 Force fixed charge command (`-W`) in mode 8:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power -2000 --pv-power-limit 30000 --duration 20
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power -2000 --pv-power-limit 30000 --duration 20
 ```
 
 Enable holding-register readback (debug):
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power 0 --holding-readback
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power 0 --holding-readback
 ```
 
 Use a fixed CSV path:
 
 ```bash
-python qcells_mode1_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power 0 --csv-file mode8_run.csv
+python solax_qcells_modbus_cli.py --host 192.168.2.50 --unit 1 --mode 8 --push-power 0 --csv-file mode8_run.csv
 ```
+
+`mode8_run.csv` (filename only) is written to `./csv/mode8_run.csv`.
+Explicit paths like `out/mode8_run.csv` or `/tmp/mode8_run.csv` are used as provided.
 
 ## Console Output
 
@@ -162,7 +166,7 @@ General:
 - `--duration` (default `20`)
 - `--interval` (default `10`)
 - `--repeat-for` (default `0`, infinite)
-- `--csv-file` (optional output path)
+- `--csv-file` (optional output path; filename-only values go to `./csv`)
 - `--disable-on-exit` / `--no-disable-on-exit` (default: disable on exit)
 - `--timeout` (default `2.0`)
 - `--holding-readback` (optional debug readback)
@@ -199,7 +203,7 @@ pip install -r requirements.txt -r requirements-dev.txt
 Run lint and tests:
 
 ```bash
-flake8 qcells_mode1_cli.py tests
+flake8 solax_qcells_modbus_cli.py tests
 pytest
 ```
 

@@ -1,6 +1,6 @@
 import pytest
 
-import qcells_mode1_cli as cli
+import solax_qcells_modbus_cli as cli
 
 
 def test_compute_mode1_ap_target_ha() -> None:

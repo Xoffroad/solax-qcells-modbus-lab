@@ -1,4 +1,4 @@
-import qcells_mode1_cli as cli
+import solax_qcells_modbus_cli as cli
 
 
 class Response:
